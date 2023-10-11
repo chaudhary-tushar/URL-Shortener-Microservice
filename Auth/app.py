@@ -2,10 +2,10 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, validators
 from flask_wtf.csrf import CSRFProtect
-from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, ValidationError
 import psycopg2
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__,static_folder='templates')
 app.config['SECRET_KEY'] = 'your_secret_key_here'  # Replace with a strong secret key
@@ -70,7 +70,9 @@ def validate_password(username,password):
     cur=conn.cursor()
     cur.execute('select password from users where username=%s;',[username])
     pswd=cur.fetchone()
-    if password!=pswd[0]:
+    password_hash = generate_password_hash(password, method="pbkdf2:sha256")
+    
+    if check_password_hash(pswd[0],password_hash):
         return False
     return True
 
@@ -98,10 +100,14 @@ def login():
             return redirect('/login')
         conn=get_conn()
         cur=conn.cursor()
+        cur.execute('update users set is_logged_in=True where username=%s;',[username])
         cur.execute('select id from users where username=%s;',[username])
         results=cur.fetchone()
+        conn.commit()
+        cur.close()
+        conn.close()
         id=results[0]
-        return redirect(f"http://127.0.0.1:5000/profile/{id}")
+        return redirect(f"http://127.0.0.1:80/profile/{id}")
     return render_template("login.html",form=form)
 
 @app.route("/signup", methods=["POST","GET"])
@@ -111,8 +117,10 @@ def signup():
         email=request.form.get('email')
         username=request.form.get('Username')
         password=request.form.get('password')
+        print(type(password), password)
         emessage=validate_email(email)
         umessage=validate_username(username)
+        password1 = generate_password_hash(password,method="pbkdf2:sha256")
         if not emessage:
             flash("Email Taken", "error")
             return redirect('signup')
@@ -121,7 +129,7 @@ def signup():
             return redirect('signup')
         conn=get_conn()
         cur=conn.cursor()
-        cur.execute('insert into users (username, email, password) values(%s,%s,%s);',[username,email,password])
+        cur.execute('insert into users (username, email, password) values(%s,%s,%s);',[username,email,password1])
         conn.commit()
         cur.close()
         conn.close()
@@ -129,6 +137,16 @@ def signup():
 
     return render_template("register.html",form=form)
 
+@app.route("/logout/<int:id>")
+def logout(id):
+    conn=get_conn()
+    cur=conn.cursor()
+    cur.execute('update users set is_logged_in=False where id=%s;',[id])
+    conn.commit()
+    cur.close()
+    conn.close()
+    return redirect("/login")
+
 if __name__ == "__main__":
-    app.run(port=5001)
+    app.run(debug=True,port=5001)
 
