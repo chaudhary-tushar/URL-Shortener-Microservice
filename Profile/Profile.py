@@ -9,10 +9,6 @@ from hashids import Hashids
 from random import choice
 import string
 
-
-    
-
-
 app=Flask(__name__,static_folder='templates')
 app.config['SECRET_KEY'] = 'your_secret_key_here'  # Replace with a strong secret key
 csrf = CSRFProtect(app)
@@ -52,8 +48,8 @@ def profile(id):
         longrl = request.form.get('url') 
         shortrl=shorting(longrl,id)
         flash(f'The shortened url is {shortrl}')
-        return render_template('index.html',data=rows,name=name,form=form)
-    return render_template("index.html",data=rows,username=name,form=form)
+        return render_template('index.html',data=rows,username=name,user_id=id,form=form)
+    return render_template("index.html",data=rows,username=name,user_id=id,form=form)
 
 
 @app.route('/delete/<int:uid>/<int:id>')
@@ -71,6 +67,10 @@ def reroute(id):
     url=f"tri.me/{id}"
     print(url)
     return redirect(f"http://{url}")
+
+@app.route('/logout/<int:id>')
+def logout(id):
+    return redirect(f"http://127.0.0.1:5001/logout/{id}")
 
 
 if __name__=='__main__':
