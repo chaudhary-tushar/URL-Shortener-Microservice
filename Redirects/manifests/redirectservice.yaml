@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name:  redirect
+spec:
+  selector:
+    app:  redirect
+  type: ClusterIP
+  ports:
+  - name:  redirect-port
+    port:  5002
+    targetPort:  5000

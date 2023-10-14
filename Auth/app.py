@@ -1,37 +1,36 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, flash
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, validators
+from wtforms import StringField, PasswordField
 from flask_wtf.csrf import CSRFProtect
 from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import InputRequired, Length, ValidationError
-import psycopg2
+from wtforms.validators import InputRequired, Length
+import psycopg2, os
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__,static_folder='templates')
-app.config['SECRET_KEY'] = 'your_secret_key_here'  # Replace with a strong secret key
+
+app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
+
 csrf = CSRFProtect(app)
-conn = psycopg2.connect(database="urlauth", 
-                        user="uauth_user", 
-                        password="Aauth123", 
-                        host="localhost", 
-                        port="5432") 
+
+def get_conn():
+    conn=psycopg2.connect(database=os.environ.get("PSQL_DB"),  
+                        user= os.environ.get("PSQL_USER"), 
+                        password= os.environ.get("PSQL_PASSWORD"), 
+                        host= os.environ.get("PSQL_HOST"), 
+                        port= os.environ.get("PSQL_PORT"))
+    return conn
+
+conn = get_conn()
 cur = conn.cursor() 
   
-# if you already have any table or not id doesnt matter this  
-# will create a products table for you. 
 cur.execute( 
     '''CREATE TABLE IF NOT EXISTS users (id serial PRIMARY KEY NOT NULL UNIQUE, username VARCHAR(15) NOT NULL UNIQUE, email VARCHAR(255) NOT NULL UNIQUE, password VARCHAR(15) NOT NULL);''')      
 conn.commit() 
 cur.close() 
 conn.close() 
 
-def get_conn():
-    conn=psycopg2.connect(database="urlauth", 
-                        user="uauth_user", 
-                        password="Aauth123", 
-                        host="localhost", 
-                        port="5432")
-    return conn
+
 
 class RegisterForm (FlaskForm):
     username = StringField (validators= [InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
@@ -40,21 +39,21 @@ class RegisterForm (FlaskForm):
     submit= SubmitField("Register")
     
 def validate_username(username):
-        conn=get_conn()
-        cur=conn.cursor()
-        cur.execute('select username from users where username=%s', [username])
-        result_username = cur.fetchone()
-        if  result_username is not None:
-            return False
-        return True
+    conn=get_conn()
+    cur=conn.cursor()
+    cur.execute('select username from users where username=%s', [username])
+    result_username = cur.fetchone()
+    if  result_username is not None:
+        return False
+    return True
 def validate_email(email):
-        conn=get_conn()
-        cur=conn.cursor()
-        cur.execute('select email from users where email=%s',[email])
-        result_email=cur.fetchone()
-        if result_email is not None:
-            return False
-        return True
+    conn=get_conn()
+    cur=conn.cursor()
+    cur.execute('select email from users where email=%s',[email])
+    result_email=cur.fetchone()
+    if result_email is not None:
+        return False
+    return True
 
 def validate_login(username):
     conn=get_conn()
@@ -107,7 +106,7 @@ def login():
         cur.close()
         conn.close()
         id=results[0]
-        return redirect(f"http://127.0.0.1:80/profile/{id}")
+        return redirect(f"http://{os.environ.get('GATE_SVC_ADDRESS')}/profile/{id}") 
     return render_template("login.html",form=form)
 
 @app.route("/signup", methods=["POST","GET"])
@@ -148,5 +147,5 @@ def logout(id):
     return redirect("/login")
 
 if __name__ == "__main__":
-    app.run(debug=True,port=5001)
+    app.run(host='0.0.0.0',port=5000)
 

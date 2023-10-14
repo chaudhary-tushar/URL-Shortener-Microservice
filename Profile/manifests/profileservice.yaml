@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name:  profile
+spec:
+  selector:
+    app:  profile
+  type:  ClusterIP
+  ports:
+  - name:  profile-port
+    port:  5001
+    targetPort:  5000

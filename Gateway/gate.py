@@ -1,14 +1,15 @@
 from flask import render_template, app, Flask, redirect
-import psycopg2
+import psycopg2, os
 
 app=Flask(__name__,static_folder='templates')
 
+
 def get_conn():
-    conn=psycopg2.connect(database="urlauth", 
-                        user="uauth_user", 
-                        password="Aauth123", 
-                        host="localhost", 
-                        port="5432")
+    conn=psycopg2.connect(database=os.environ.get("PSQL_DB"),  
+                        user= os.environ.get("PSQL_USER"), 
+                        password= os.environ.get("PSQL_PASSWORD"), 
+                        host= os.environ.get("PSQL_HOST"), 
+                        port= os.environ.get("PSQL_PORT"))
     return conn
 
 @app.route("/")
@@ -17,25 +18,23 @@ def index():
 
 @app.route("/login",methods=["GET"])
 def login():
-    return redirect("http://127.0.0.1:5001/login")
+    return redirect(f"http://{os.environ.get('AUTH_SVC_ADDRESS')}/profile/{id}")   #os.env.get{PROFILE_SVC}
 
 @app.route("/profile/<int:id>")
 def profile(id):
     conn=get_conn()
     cur=conn.cursor()
     cur.execute('select is_logged_in from users where id=%s;',[id])
-    print("workin till gate/profile redirection")
     stst=cur.fetchone()[0]
-    print(stst)
     if stst==True:
-        return redirect(f"http://127.0.0.1:5002/profile/{id}")
+        return redirect(f"http://{os.environ.get('PROFILE_SVC_ADDRESS')}/profile/{id}")   #os.env.get{PROFILE_SVC}
     else:
-        return redirect("http://127.0.0.1:5001/login")
+        return redirect(f"http://{os.environ.get('AUTH_SVC_ADDRESS')}/profile/{id}")   #os.env.get{PROFILE_SVC}
     
 @app.route('/<id>')
 def url_redirect(id):
-    return redirect(f"http://127.0.0.1:5003/redirect/{id}")
+    return redirect(f"http://{os.environ.get('REDIRECT_SVC_ADDRESS')}/profile/{id}")  #os.env.get{PROFILE_SVC}
 
 
 if __name__=='__main__':
-    app.run(debug=True,port=80)
+    app.run(host='0.0.0.0',port=8080)

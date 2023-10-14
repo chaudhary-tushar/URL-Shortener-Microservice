@@ -1,25 +1,23 @@
 from flask import render_template, app, Flask, redirect,request, url_for, flash
 from flask_wtf.csrf import CSRFProtect
-import psycopg2
-from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import InputRequired, Length, ValidationError
+import psycopg2, os
+from wtforms import StringField, SubmitField
+from wtforms.validators import InputRequired, Length
 from flask_wtf import FlaskForm
-import requests
-from hashids import Hashids
 from random import choice
 import string
 
 app=Flask(__name__,static_folder='templates')
-app.config['SECRET_KEY'] = 'your_secret_key_here'  # Replace with a strong secret key
+app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
+
 csrf = CSRFProtect(app)
-hashids = Hashids(min_length=4, salt=app.config['SECRET_KEY'])
 
 def get_conn():
-    conn=psycopg2.connect(database="urlauth", 
-                        user="uauth_user", 
-                        password="Aauth123", 
-                        host="localhost", 
-                        port="5432")
+    conn=psycopg2.connect(database=os.environ.get("PSQL_DB"),  
+                        user= os.environ.get("PSQL_USER"), 
+                        password= os.environ.get("PSQL_PASSWORD"), 
+                        host= os.environ.get("PSQL_HOST"), 
+                        port= os.environ.get("PSQL_PORT"))
     return conn
 
 def shorting(strrl,id):
@@ -66,12 +64,12 @@ def deletelink(id,uid):
 def reroute(id):
     url=f"tri.me/{id}"
     print(url)
-    return redirect(f"http://{url}")
+    return redirect(f"http://{os.environ.get('GATE_SVC_ADDRESS')}/profile/{id}")
 
 @app.route('/logout/<int:id>')
 def logout(id):
-    return redirect(f"http://127.0.0.1:5001/logout/{id}")
+    return redirect(f"http://{os.environ.get('AUTH_SVC_ADDRESS')}/profile/{id}")
 
 
 if __name__=='__main__':
-    app.run(debug=True,port=5002)
+    app.run(host='0.0.0.0',port=5002)

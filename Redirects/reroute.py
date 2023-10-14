@@ -1,13 +1,14 @@
 from flask import render_template, app, Flask, redirect
-import psycopg2
+import psycopg2, os
 
 app=Flask(__name__,static_folder='templates')
+
 def get_conn():
-    conn=psycopg2.connect(database="urlauth", 
-                        user="uauth_user", 
-                        password="Aauth123", 
-                        host="localhost", 
-                        port="5432")
+    conn=psycopg2.connect(database=os.environ.get("PSQL_DB"),  
+                        user= os.environ.get("PSQL_USER"), 
+                        password= os.environ.get("PSQL_PASSWORD"), 
+                        host= os.environ.get("PSQL_HOST"), 
+                        port= os.environ.get("PSQL_PORT"))
     return conn
 
 
@@ -35,4 +36,4 @@ def reroute(id):
         return render_template("404.html")
 
 if __name__=='__main__':
-    app.run(debug=True,port=5003)
+    app.run(host='0.0.0.0',port=5000)

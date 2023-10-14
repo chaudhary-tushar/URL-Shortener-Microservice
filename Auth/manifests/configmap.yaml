@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: auth-configmap
+data:
+  PSQL_HOST: host.minikube.internal
+  PSQL_USER: uauth_user
+  PSQL_DB: urlauth
+  PSQL_PORT: "5432"
+  GATE_SVC_ADDRESS : "gate:8080"

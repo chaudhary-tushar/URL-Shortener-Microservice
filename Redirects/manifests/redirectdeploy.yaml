@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redirect
+spec:
+  selector:
+    matchLabels:
+      app: redirect
+  template:
+    metadata:
+      labels:
+        app: redirect
+    spec:
+      containers:
+      - name: redirect
+        image: romeo7/trim_direct:v1
+        ports:
+        - containerPort: 5000
+        envFrom:
+            - configMapRef:
+                name: redirect-configmap
+            - secretRef:
+                name: redirect-secret

@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: profile
+spec:
+  selector:
+    matchLabels:
+      app: profile
+  template:
+    metadata:
+      labels:
+        app: profile
+    spec:
+      containers:
+      - name: profile
+        image: romeo7/trim_profile:v1
+        ports:
+        - containerPort: 5000
+        envFrom:
+            - configMapRef:
+                name: profile-configmap
+            - secretRef:
+                name: profile-secret
