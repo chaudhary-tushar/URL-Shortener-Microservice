@@ -8,5 +8,5 @@ spec:
   type: ClusterIP
   ports:
   - name:  redirect-port
-    port:  5002
+    port:  5000
     targetPort:  5000

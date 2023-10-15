@@ -8,5 +8,5 @@ data:
   PSQL_DB: urlauth
   PSQL_PORT: "5432"
   AUTH_SVC_ADDRESS : "auth:5000"
-  PROFILE_SVC_ADDRESS : "profile:5000"
-  REDIRECT_SVC_ADDRESS : "redirect:5000"
+  PROFILE_SVC_ADDRESS : "profile:5001"
+  REDIRECT_SVC_ADDRESS : "redirect:5002"

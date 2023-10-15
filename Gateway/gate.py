@@ -18,7 +18,7 @@ def index():
 
 @app.route("/login",methods=["GET"])
 def login():
-    return redirect(f"http://{os.environ.get('AUTH_SVC_ADDRESS')}/profile/{id}")   #os.env.get{PROFILE_SVC}
+    return redirect(f"http://{os.environ.get('AUTH_SVC_ADDRESS')}/login/{id}")   #os.env.get{PROFILE_SVC}
 
 @app.route("/profile/<int:id>")
 def profile(id):
