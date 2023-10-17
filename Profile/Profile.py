@@ -7,6 +7,7 @@ from flask_wtf import FlaskForm
 from random import choice
 import string
 
+
 app=Flask(__name__,static_folder='templates')
 app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
 
@@ -63,13 +64,12 @@ def deletelink(id,uid):
 @app.route('/<id>')
 def reroute(id):
     url=f"tri.me/{id}"
-    print(url)
-    return redirect(f"http://{os.environ.get('GATE_SVC_ADDRESS')}/profile/{id}")
+    return redirect(f"http://{os.environ.get('GATE_SVC_ADDRESS')}/{id}")
 
 @app.route('/logout/<int:id>')
 def logout(id):
-    return redirect(f"http://{os.environ.get('AUTH_SVC_ADDRESS')}/profile/{id}")
+    return redirect(f"http://{os.environ.get('AUTH_SVC_ADDRESS')}/login")
 
 
 if __name__=='__main__':
-    app.run(host='0.0.0.0',port=5000)
+    app.run(host='0.0.0.0',port=5001)

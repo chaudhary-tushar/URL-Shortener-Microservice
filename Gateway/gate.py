@@ -1,6 +1,7 @@
 from flask import render_template, app, Flask, redirect
 import psycopg2, os
 
+
 app=Flask(__name__,static_folder='templates')
 
 
@@ -18,7 +19,7 @@ def index():
 
 @app.route("/login",methods=["GET"])
 def login():
-    return redirect(f"http://{os.environ.get('AUTH_SVC_ADDRESS')}/login/{id}")   #os.env.get{PROFILE_SVC}
+    return redirect(f"http://{os.environ.get('AUTH_SVC_ADDRESS')}/login")   
 
 @app.route("/profile/<int:id>")
 def profile(id):
@@ -27,13 +28,14 @@ def profile(id):
     cur.execute('select is_logged_in from users where id=%s;',[id])
     stst=cur.fetchone()[0]
     if stst==True:
-        return redirect(f"http://{os.environ.get('PROFILE_SVC_ADDRESS')}/profile/{id}")   #os.env.get{PROFILE_SVC}
+        return redirect(f"http://{os.environ.get('PROFILE_SVC_ADDRESS')}/profile/{id}")   
     else:
-        return redirect(f"http://{os.environ.get('AUTH_SVC_ADDRESS')}/profile/{id}")   #os.env.get{PROFILE_SVC}
+        return redirect(f"http://{os.environ.get('AUTH_SVC_ADDRESS')}/login")   
     
 @app.route('/<id>')
 def url_redirect(id):
-    return redirect(f"http://{os.environ.get('REDIRECT_SVC_ADDRESS')}/profile/{id}")  #os.env.get{PROFILE_SVC}
+    print("got till here")
+    return redirect(f"http://{os.environ.get('REDIRECT_SVC_ADDRESS')}/redirect/{id}")  
 
 
 if __name__=='__main__':

@@ -7,6 +7,7 @@ from wtforms.validators import InputRequired, Length
 import psycopg2, os
 from werkzeug.security import generate_password_hash, check_password_hash
 
+
 app = Flask(__name__,static_folder='templates')
 
 app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
