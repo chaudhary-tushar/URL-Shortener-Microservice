@@ -10,7 +10,14 @@ spec:
     http:
       paths:
       - pathType: Prefix
-        path: "/"
+        path: "/login"
+        backend:
+          service:
+            name: auth
+            port: 
+              number: 5000
+      - pathType: Prefix
+        path: "/signup"
         backend:
           service:
             name: auth

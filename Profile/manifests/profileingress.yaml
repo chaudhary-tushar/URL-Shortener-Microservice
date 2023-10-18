@@ -10,7 +10,7 @@ spec:
     http:
       paths:
       - pathType: Prefix
-        path: "/profile"
+        path: "/profile/<int:id>"
         backend:
           service:
             name: profile

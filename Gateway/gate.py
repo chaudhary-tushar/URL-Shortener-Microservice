@@ -21,7 +21,7 @@ def index():
 def login():
     return redirect(f"http://{os.environ.get('AUTH_SVC_ADDRESS')}/login")   
 
-@app.route("/profile/<int:id>")
+@app.route("/prof/<int:id>")
 def profile(id):
     conn=get_conn()
     cur=conn.cursor()

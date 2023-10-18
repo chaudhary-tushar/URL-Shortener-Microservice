@@ -3,9 +3,14 @@ kind: Deployment
 metadata:
   name: redirect
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: redirect
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 3
   template:
     metadata:
       labels:

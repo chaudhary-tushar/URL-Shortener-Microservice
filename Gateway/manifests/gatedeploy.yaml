@@ -6,6 +6,10 @@ spec:
   selector:
     matchLabels:
       app: gate
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
   template:
     metadata:
       labels:

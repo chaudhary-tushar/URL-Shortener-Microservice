@@ -107,7 +107,7 @@ def login():
         cur.close()
         conn.close()
         id=results[0]
-        return redirect(f"http://{os.environ.get('GATE_SVC_ADDRESS')}/profile/{id}") 
+        return redirect(f"http://{os.environ.get('GATE_SVC_ADDRESS')}/prof/{id}") 
     return render_template("login.html",form=form)
 
 @app.route("/signup", methods=["POST","GET"])
