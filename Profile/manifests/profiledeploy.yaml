@@ -20,7 +20,7 @@ spec:
       - name: profile
         image: romeo7/trim_profile:v1
         ports:
-        - containerPort: 5000
+        - containerPort: 6000
         envFrom:
             - configMapRef:
                 name: profile-configmap

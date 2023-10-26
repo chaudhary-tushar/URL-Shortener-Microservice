@@ -17,7 +17,7 @@ spec:
             port: 
               number: 8080
       - pathType: Prefix
-        path: "/prof/<int:id>"
+        path: "/profile/<int:id>"
         backend:
           service:
             name: gate
