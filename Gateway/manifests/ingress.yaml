@@ -13,20 +13,20 @@ spec:
         path: "/"
         backend:
           service:
-            name: gate
+            name: gate-svc
             port: 
               number: 8080
       - pathType: Prefix
         path: "/prof/<int:id>"
         backend:
           service:
-            name: gate
+            name: gate-svc
             port: 
               number: 8080
       - pathType: Prefix
         path: "/<id>"
         backend:
           service:
-            name: gate
+            name: gate-svc
             port: 
               number: 8080

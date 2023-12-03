@@ -68,8 +68,8 @@ def reroute(id):
 
 @app.route('/logout/<int:id>')
 def logout(id):
-    return redirect(f"http://{os.environ.get('AUTH_SVC_ADDRESS')}/login")
+    return redirect(f"http://{os.environ.get('GATE_SVC_ADDRESS')}/login")
 
 
 if __name__=='__main__':
-    app.run(host='0.0.0.0',port=6000)
+    app.run(host='0.0.0.0',port=8000)

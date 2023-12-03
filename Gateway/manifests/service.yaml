@@ -1,12 +1,13 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name:  gate
+  name:  gate-svc
 spec:
   selector:
     app:  gate
-  type:  ClusterIP
+  type:  LoadBalancer
   ports:
   - name:  gate-port
+    protocol: TCP
     port:  8080
     targetPort:  8080

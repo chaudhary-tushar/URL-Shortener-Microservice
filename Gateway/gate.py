@@ -15,10 +15,14 @@ def get_conn():
 
 @app.route("/")
 def index():
+    print(f"http://{os.environ.get('AUTH_SVC_ADDRESS')}/login")
+    print(f"http://{os.environ.get('PROFILE_SVC_ADDRESS')}/login")
+    print(f"http://{os.environ.get('REDIRECT_SVC_ADDRESS')}/login")
     return render_template("index.html")
 
 @app.route("/login",methods=["GET"])
 def login():
+    print(f"http://{os.environ.get('AUTH_SVC_ADDRESS')}/login")
     return redirect(f"http://{os.environ.get('AUTH_SVC_ADDRESS')}/login")   
 
 @app.route("/prof/<int:id>")

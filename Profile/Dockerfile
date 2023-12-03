@@ -1,13 +1,21 @@
-FROM python:3.10-slim-bullseye
+FROM python:3.9-alpine3.13
+LABEL maintainer="chaudharytushar014@gmail.com"
 
-RUN apt-get update \
-  && apt-get install -y --no-install-recommends --no-install-suggests \
-  build-essential libpq-dev \
-  && pip install --no-cache-dir --upgrade pip
+ENV PYTHONUNBUFFERED 1
 
-WORKDIR /app
-COPY ./requirements.txt /app
-RUN pip install --no-cache-dir --requirement /app/requirements.txt
-COPY . /app
-EXPOSE 6000
+COPY ./requirements.txt /tmp/requirements.txt
+COPY . /Profile
+WORKDIR /Profile
+EXPOSE 8000
+
+RUN python -m venv /py && \
+    /py/bin/pip install --upgrade pip && \
+    apk add --update --no-cache postgresql-client && \
+    apk add --update --no-cache --virtual .tmp-build-deps \
+        build-base postgresql-dev musl-dev && \
+    /py/bin/pip install -r /tmp/requirements.txt && \
+    rm -rf /tmp && \
+    apk del .tmp-build-deps
+
+ENV PATH="/py/bin:$PATH"
 CMD ["python3", "Profile.py"]

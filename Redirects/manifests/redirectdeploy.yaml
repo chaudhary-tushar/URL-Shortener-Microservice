@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: redirect
-        image: romeo7/trim_direct:v1
+        image: romeo7/trim_redirect:v1
         ports:
         - containerPort: 7000
         envFrom:

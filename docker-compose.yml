@@ -1,0 +1,84 @@
+version: '3.9'
+
+services:
+  auth:
+    build:
+      context: ./Auth/
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./Auth:/Auth
+    command: >
+      sh -c "python app.py"
+    environment:
+      - PSQL_HOST=host.docker.internal
+      - PSQL_USER=postgres
+      - PSQL_DB=urlauth
+      - PSQL_PORT=5432
+      - GATE_SVC_ADDRESS=localhost:8080
+      - PSQL_PASSWORD=root
+      - SECRET_KEY=cm9tZW9xd2VydHkK
+    stop_signal: SIGINT
+  
+  gate:
+    build:
+      context: ./Gateway/
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./Gateway:/Gate
+    command: >
+      sh -c "python gate.py"
+    environment:
+      - AUTH_SVC_ADDRESS=localhost:5000
+      - PROFILE_SVC_ADDRESS=localhost:8000
+      - REDIRECT_SVC_ADDRESS=localhost:7000
+      - PSQL_HOST=host.docker.internal
+      - PSQL_USER=postgres
+      - PSQL_DB=urlauth
+      - PSQL_PORT=5432
+      - PSQL_PASSWORD=root
+      - SECRET_KEY=cm9tZW9xd2VydHkK
+    stop_signal: SIGINT
+    depends_on:
+      - auth
+      - profile
+      - redirect
+    
+  profile:
+    build:
+      context: ./Profile/
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./Profile:/Profile
+    command: >
+      sh -c "python Profile.py"
+    environment:
+      - PSQL_HOST=host.docker.internal
+      - PSQL_USER=postgres
+      - PSQL_DB=urlauth
+      - PSQL_PORT=5432
+      - GATE_SVC_ADDRESS=localhost:8080
+      - AUTH_SVC_ADDRESS=localhost:5000
+      - PSQL_PASSWORD=root
+      - SECRET_KEY=cm9tZW9xd2VydHkK
+    stop_signal: SIGINT
+  
+  redirect:
+    build:
+      context: ./Redirects/
+    ports:
+      - "7000:7000"
+    volumes:
+      - ./Redirects:/Redirects
+    command: >
+      sh -c "python reroute.py"
+    environment:
+      - PSQL_HOST=host.docker.internal
+      - PSQL_USER=postgres
+      - PSQL_DB=urlauth
+      - PSQL_PORT=5432
+      - PSQL_PASSWORD=root
+    stop_signal: SIGINT
+    
