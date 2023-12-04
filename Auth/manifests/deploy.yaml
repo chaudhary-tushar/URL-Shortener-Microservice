@@ -20,9 +20,7 @@ spec:
     spec:
       containers:
         - name: auth
-          image: romeo7/trim_auth:v1
-          ports:
-          - containerPort: 5000
+          image: romeo7/trim_auth
           envFrom:
             - configMapRef:
                 name: auth-configmap

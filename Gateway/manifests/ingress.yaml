@@ -2,31 +2,33 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: gate-ingress
-  labels:
-    name: gate-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
 spec:
   rules:
-  - host: tri.me
+  - host: tri.qe
     http:
       paths:
-      - pathType: Prefix
-        path: "/"
+      - path: /
+        pathType: Prefix
         backend:
           service:
-            name: gate-svc
+            name: gate
             port: 
               number: 8080
-      - pathType: Prefix
-        path: "/prof/<int:id>"
-        backend:
-          service:
-            name: gate-svc
-            port: 
-              number: 8080
-      - pathType: Prefix
-        path: "/<id>"
-        backend:
-          service:
-            name: gate-svc
-            port: 
-              number: 8080
+      # - pathType: Prefix
+      #   path: "/prof/<int:id>"
+      #   backend:
+      #     service:
+      #       name: gate-svc
+      #       port: 
+      #         number: 8080
+      # - pathType: Prefix
+      #   path: "/<id>"
+      #   backend:
+      #     service:
+      #       name: gate-svc
+      #       port: 
+      #         number: 8080

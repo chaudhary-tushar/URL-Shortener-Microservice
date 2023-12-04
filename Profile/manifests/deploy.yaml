@@ -1,12 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: redirect
+  name: profile
+  labels:
+    app: profile
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: redirect
+      app: profile
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -14,15 +16,13 @@ spec:
   template:
     metadata:
       labels:
-        app: redirect
+        app: profile
     spec:
       containers:
-      - name: redirect
-        image: romeo7/trim_redirect:v1
-        ports:
-        - containerPort: 7000
+      - name: profile
+        image: romeo7/trim_profile
         envFrom:
             - configMapRef:
-                name: redirect-configmap
+                name: profile-configmap
             - secretRef:
-                name: redirect-secret
+                name: profile-secret

@@ -2,7 +2,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: gate
+  labels:
+    app: gate
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: gate
@@ -17,9 +20,7 @@ spec:
     spec:
       containers:
       - name: gate
-        image: romeo7/trim_gate:v1
-        ports:
-        - containerPort: 8080
+        image: romeo7/trim_gate
         envFrom:
             - configMapRef:
                 name: gate-configmap

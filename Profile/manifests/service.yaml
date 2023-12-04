@@ -1,5 +1,5 @@
-kind: Service
 apiVersion: v1
+kind: Service
 metadata:
   name:  profile
 spec:
@@ -7,6 +7,6 @@ spec:
     app:  profile
   type:  ClusterIP
   ports:
-  - name:  profile-port
-    port:  6000
-    targetPort:  6000
+  - port:  8000
+    targetPort:  8000
+    protocol: TCP
