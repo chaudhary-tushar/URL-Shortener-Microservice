@@ -1,5 +1,5 @@
 from flask import render_template, app, Flask, redirect
-import psycopg2, os
+import psycopg2, os, time
 
 
 app=Flask(__name__,static_folder='templates')
@@ -12,6 +12,16 @@ def get_conn():
                         host= os.environ.get("PSQL_HOST"), 
                         port= os.environ.get("PSQL_PORT"))
     return conn
+
+
+def check_services():
+    for _ in range(5):
+        print(f"{os.environ.get('AUTH_SVC_ADDRESS')}")
+        print(f"{os.environ.get('PROFILE_SVC_ADDRESS')}")
+        print(f"{os.environ.get('REDIRECT_SVC_ADDRESS')}")
+        time.sleep(5)
+    return
+
 
 @app.route("/")
 def index():
@@ -43,4 +53,5 @@ def url_redirect(id):
 
 
 if __name__=='__main__':
+    check_services()
     app.run(host='0.0.0.0',port=8080)

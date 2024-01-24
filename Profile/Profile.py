@@ -5,13 +5,20 @@ from wtforms import StringField, SubmitField
 from wtforms.validators import InputRequired, Length
 from flask_wtf import FlaskForm
 from random import choice
-import string
+import string, time
 
 
 app=Flask(__name__,static_folder='templates')
 app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
 
 csrf = CSRFProtect(app)
+
+def check_services():
+    for _ in range(5):
+        print(f"{os.environ.get('AUTH_SVC_ADDRESS')}")
+        print(f"{os.environ.get('GATE_SVC_ADDRESS')}")
+        time.sleep(5)
+    return
 
 def get_conn():
     conn=psycopg2.connect(database=os.environ.get("PSQL_DB"),  
@@ -72,4 +79,5 @@ def logout(id):
 
 
 if __name__=='__main__':
+    check_services()
     app.run(host='0.0.0.0',port=8000)

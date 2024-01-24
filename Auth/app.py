@@ -4,7 +4,7 @@ from wtforms import StringField, PasswordField
 from flask_wtf.csrf import CSRFProtect
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length
-import psycopg2, os
+import psycopg2, os, time
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
@@ -47,6 +47,8 @@ def validate_username(username):
     if  result_username is not None:
         return False
     return True
+
+
 def validate_email(email):
     conn=get_conn()
     cur=conn.cursor()
@@ -56,6 +58,7 @@ def validate_email(email):
         return False
     return True
 
+
 def validate_login(username):
     conn=get_conn()
     cur=conn.cursor()
@@ -64,6 +67,7 @@ def validate_login(username):
     if row is None:
         return False
     return True
+
 
 def validate_password(username,password):
     conn=get_conn()
@@ -76,8 +80,11 @@ def validate_password(username,password):
         return False
     return True
 
-
-
+def check_services():
+    for _ in range(5):
+        print(f"{os.environ.get('GATE_SVC_ADDRESS')}")
+        time.sleep(5)
+    return
 class LoginForm (FlaskForm):
     username = StringField (validators= [InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
     password = PasswordField (validators= [InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Password"})
@@ -148,5 +155,6 @@ def logout(id):
     return redirect("/login")
 
 if __name__ == "__main__":
+    check_services()
     app.run(host='0.0.0.0',port=5000)
 
