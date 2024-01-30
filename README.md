@@ -5,7 +5,7 @@ This uses Postgresql Database of the host system.
 
 ## Screenshots
 
-![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
+![App Screenshot](url-shortener.drawio.png)
 
 
 ## Features
